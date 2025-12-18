@@ -1,0 +1,27 @@
+name: Reset Commit
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_hash:
+        description: 'Hash of the commit to be reverted'
+        required: true
+
+jobs:
+  reset-commit:
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Fetch commit
+        run: git fetch origin ${{ github.event.inputs.commit_hash }}
+
+      - name: Update the branch
+        run: git pull
+
+      - name: Reset Commit
+        run: |
+          git reset ${{ github.event.inputs.commit_hash }}
+          git push --force origin ${{ github.ref }}

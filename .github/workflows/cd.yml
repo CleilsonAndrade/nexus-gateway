@@ -1,0 +1,62 @@
+name: CD - Deploy to Production
+
+on:
+  workflow_run:
+    workflows: ['CI - Test and Build']
+    types:
+      - completed
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, linux]
+
+    permissions:
+      actions: read
+      contents: read
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    environment:
+      name: production
+      url: 'http://localhost:3000/api/docs'
+
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-artifact
+          path: .
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE_CONTENTS }}" > .env
+
+      - name: Deploy with PM2
+        run: |
+          pm2 restart ecosystem.config.js --update-env || pm2 start ecosystem.config.js
+          pm2 save
+
+      - name: Health Check
+        run: |
+          sleep 5
+          curl -f http://localhost:3000/api/docs || exit 1
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "Deployment carried out successfully!"
+          else
+            echo "Deploy failed!"
+          fi

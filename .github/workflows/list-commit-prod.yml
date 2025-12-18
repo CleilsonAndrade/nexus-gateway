@@ -1,0 +1,19 @@
+name: Commit list - PROD
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  main-list-commits:
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: joined the list
+        run: |
+          git fetch --unshallow || true
+          git log --pretty=format:"%H - %an <%ae> - %s - %ad"

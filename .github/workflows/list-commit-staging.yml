@@ -1,0 +1,19 @@
+name: Commit list - STAGING
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  stage-list-commits:
+    runs-on: [self-hosted, linux]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Joined the list
+        run: |
+          git fetch --unshallow || true
+          git log --pretty=format:"%H - %an <%ae> - %s - %ad"
