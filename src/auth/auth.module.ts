@@ -4,7 +4,7 @@ import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import type { StringValue } from 'ms';
-import { EmployeeEntity } from 'src/modules/erp-shared/employees/entities/employee.entity';
+import { EmployeeEntity } from 'src/modules/erp-shared/employees/entity/employee.entity';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';

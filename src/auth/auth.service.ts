@@ -8,7 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EmployeeEntity } from 'src/modules/erp-shared/employees/entities/employee.entity';
+import { EmployeeEntity } from 'src/modules/erp-shared/employees/entity/employee.entity';
 import { Repository } from 'typeorm';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 
