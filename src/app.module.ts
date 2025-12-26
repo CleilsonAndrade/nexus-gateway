@@ -5,7 +5,9 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import databaseConfig from './config/database.config';
+import databaseConfig, {
+  DatabaseConfigService,
+} from './config/database.config';
 import { validate } from './config/env.validation';
 
 @Module({
@@ -34,6 +36,7 @@ import { validate } from './config/env.validation';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
+      useClass: DatabaseConfigService,
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
         const dbConfig = configService.get<TypeOrmModuleOptions>('database');
 
