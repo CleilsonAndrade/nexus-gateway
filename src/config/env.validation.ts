@@ -47,6 +47,24 @@ export class EnvironmentVariables {
   @IsString({ message: 'DB_SERVICE_NAME is required.' })
   DB_SERVICE_NAME: string;
 
+  @IsNumber()
+  @Min(1000, { message: 'DB_QUERY_TIMEOUT must be at least 1000ms (1 second)' })
+  @Max(300000, {
+    message: 'DB_QUERY_TIMEOUT should not exceed 300000ms (5 minutes)',
+  })
+  @IsOptional()
+  DB_QUERY_TIMEOUT?: number = 300000;
+
+  @IsNumber()
+  @Min(1, { message: 'DB_POOL_MIN must be at least 2' })
+  @Max(50, { message: 'DB_POOL_MIN should bot exceed 50' })
+  DB_POOL_MIN?: number = 2;
+
+  @IsNumber()
+  @Min(1, { message: 'DB_POOL_MAX must be at least 2' })
+  @Max(100, { message: 'DB_POOL_MAX should not exceed 100' })
+  DB_POOL_MAX?: number = 10;
+
   @IsString({ message: 'JWT_SECRET is required.' })
   @MinLength(32, {
     message:
@@ -56,6 +74,20 @@ export class EnvironmentVariables {
 
   @IsString({ message: 'JWT_EXPIRATION_TIME is required.' })
   JWT_EXPIRATION_TIME: string;
+
+  @IsNumber()
+  @Min(1, { message: 'RATE_LIMIT_TTL must be at least 1 second' })
+  @Max(3600, {
+    message: 'RATE_LIMIT_TTL should be not exceed 3600 seconds (1 hour)',
+  })
+  @IsOptional()
+  RATE_LIMIT_TTL?: number = 60;
+
+  @IsNumber()
+  @Min(1, { message: 'RATE_LIMIT_MAX must be at least 1' })
+  @Max(1000, { message: 'RATE_LIMIT_MAX should not exceed 10000' })
+  @IsOptional()
+  RATE_LIMIT_MAX?: number = 100;
 
   @IsNumber()
   @IsOptional()

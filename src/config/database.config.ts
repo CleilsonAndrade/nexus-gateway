@@ -15,13 +15,19 @@ export default registerAs(
 
     synchronize: false,
 
-    logging: process.env.NODE_ENV === 'development',
+    logging:
+      process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error'],
 
     extra: {
-      poolMin: 2,
-      poolMax: 10,
+      poolMin: Number(process.env.DB_POOL_MIN) || 2,
+      poolMax: Number(process.env.DB_POOL_MAX) || 10,
       poolIncrement: 1,
       poolTimeout: 60,
     },
+
+    migrations: [__dirname + '../database/migrations/*{.ts,.js}'],
+    migrationsRun: false,
   }),
 );
